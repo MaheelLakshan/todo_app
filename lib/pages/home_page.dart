@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/utils/dialog_box.dart';
 import 'package:todo_app/utils/to_do_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,6 +10,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+//List of todo List
+  List toDoList = [
+    ['Make tutorials', false],
+    ['Make tutorials', false],
+  ];
+
+  void checkBoxChanged(bool? value, int index) {
+    setState(() {
+      toDoList[index][1] = !toDoList[index][1];
+    });
+  }
+
+  //create a task
+  void createTask() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogBox();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,8 +49,19 @@ class _HomePageState extends State<HomePage> {
         ),
         elevation: 0,
       ),
-      body: ListView(
-        children: [ToDoTile()],
+      floatingActionButton: FloatingActionButton(
+        onPressed: createTask,
+        child: const Icon(Icons.add),
+      ),
+      body: ListView.builder(
+        itemCount: toDoList.length,
+        itemBuilder: (context, index) {
+          return ToDoTile(
+            taskName: toDoList[index][0],
+            taskCompleted: toDoList[index][1],
+            onChanged: (value) => (checkBoxChanged(value, index)),
+          );
+        },
       ),
     );
   }
